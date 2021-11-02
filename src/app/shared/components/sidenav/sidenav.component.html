@@ -1,0 +1,19 @@
+<mat-sidenav-container class="sidenav-container mat-app-background">
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        mat-icon-button
+        class="ml-2"
+        aria-label="Botão para voltar à pagina inicial"
+        (click)="home()"
+      >
+        <mat-icon aria-label="Ícone de página inicial">home</mat-icon>
+      </button>
+
+      <span class="flex-spacer"></span>
+    </mat-toolbar>
+    <div class="container">
+      <ng-content></ng-content>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

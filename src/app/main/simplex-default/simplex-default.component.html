@@ -1,0 +1,129 @@
+<div class="simplex-default">
+  <div class="z-actions">
+    <h3 class="mt-1">F(Máx) Z</h3>
+    <button
+      mat-mini-fab
+      color="primary"
+      class="btn-z-add"
+      (click)="addNonBasicVariable()"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+    <button
+      mat-mini-fab
+      color="warn"
+      *ngIf="zMax.controls.length > 1"
+      (click)="removeLastNonBasicVariable()"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  <form [formGroup]="zMaxForm" autocomplete="off">
+    <div formArrayName="zMax">
+      <div class="row">
+        <ng-container *ngFor="let z of zMax.controls; let i = index">
+          <div class="col-sm-1" [formGroupName]="i">
+            <mat-form-field appearance="outline">
+              <mat-label>X{{ i + 1 }}</mat-label>
+              <input
+                type="number"
+                matInput
+                formControlName="nonBasicVariable"
+              />
+            </mat-form-field>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </form>
+
+  <div class="restrictions-actions">
+    <h3 class="mt-1">Restrições</h3>
+    <button
+      mat-mini-fab
+      color="primary"
+      class="btn-restrictions-add"
+      (click)="addRestriction()"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+    <button
+      mat-mini-fab
+      color="warn"
+      *ngIf="restrictions.controls.length > 1"
+      (click)="removeLastRestriction()"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  <form [formGroup]="restrictionsForm" autocomplete="off">
+    <div formArrayName="restrictions">
+      <div
+        [formGroupName]="i"
+        *ngFor="let restriction of restrictions.controls; let i = index"
+        class="row"
+      >
+        <ng-container
+          formArrayName="nonBasicVariables"
+          *ngFor="
+            let variable of restriction.controls.nonBasicVariables.controls;
+            let j = index
+          "
+        >
+          <div class="col-sm-1" [formGroupName]="j">
+            <mat-form-field appearance="outline">
+              <mat-label>X{{ j + 1 }}</mat-label>
+              <input type="number" matInput formControlName="variable" />
+            </mat-form-field>
+          </div>
+        </ng-container>
+
+        <div class="col-sm-1">
+          <div class="last-or-equal">
+            <img src="https://img.icons8.com/ios/50/000000/less-or-equal.png" />
+          </div>
+        </div>
+
+        <div class="col-sm-1">
+          <mat-form-field appearance="outline">
+            <mat-label>Const</mat-label>
+            <input type="number" matInput formControlName="constant" />
+          </mat-form-field>
+        </div>
+
+        <hr />
+      </div>
+    </div>
+  </form>
+
+  <button mat-raised-button color="primary" (click)="generateResults()">
+    Gerar
+  </button>
+
+  <div class="row results" *ngIf="dataSource.length > 0">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="var-basic">
+        <th mat-header-cell *matHeaderCellDef>Vár. Básicas</th>
+        <td mat-cell *matCellDef="let element">{{ element.zMax.label }}</td>
+      </ng-container>
+
+      <ng-container
+        *ngFor="let variable of dataSource[0].zMax.variables; let i = index"
+        [matColumnDef]="'X' + (i + 1)"
+      >
+        <th mat-header-cell *matHeaderCellDef>X {{ i + 1 }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ variable }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="const">
+        <th mat-header-cell *matHeaderCellDef>Const.</th>
+        <td mat-cell *matCellDef="let element">{{ element.zMax.constant }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</div>

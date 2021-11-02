@@ -1,0 +1,29 @@
+.cards {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10%;
+}
+
+.simplex-default-card {
+  width: 50vw;
+  height: 50vh;
+  padding-top: 50px;
+  cursor: pointer;
+
+  box-shadow: 0 0 1em black;
+  transition: 1s all;
+}
+
+.simplex-default-card:hover {
+  transform: scale(1.03);
+}
+
+.icon-and-text {
+  text-align: center;
+  font-size: 3rem;
+}
+
+.icon-and-text mat-icon {
+  transform: scale(2.5);
+}

@@ -1,0 +1,29 @@
+.simplex-default {
+  margin-top: 10px;
+}
+
+.z-actions,
+.restrictions-actions {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.btn-z-add,
+.btn-restrictions-add {
+  margin: 0 10px;
+}
+
+.last-or-equal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.results {
+  margin-top: 10px;
+}
+
+.mat-form-field {
+  width: 100%;
+}
