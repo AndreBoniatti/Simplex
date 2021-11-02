@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { IRestrictionsValues } from './interfaces/IRestrictionsValues';
 import { ISimplexDefault } from './interfaces/ISimplexDefault';
+import { ISimplexDefaultResults } from './interfaces/ISimplexDefaultResults';
 import { ISimplexDefaultValues } from './interfaces/ISimplexDefaultValues';
 import { IZMaxValues } from './interfaces/IZMaxValues';
 
@@ -14,7 +15,7 @@ export class SimplexDefaultComponent implements OnInit {
   restrictions: FormArray;
 
   displayedColumns: string[] = [];
-  dataSource: ISimplexDefaultValues[] = [];
+  dataSource: ISimplexDefaultResults[] = [];
 
   zMaxForm: FormGroup = this._formBuilder.group({
     zMax: this._formBuilder.array([this.addZMaxGroup()]),
@@ -109,7 +110,18 @@ export class SimplexDefaultComponent implements OnInit {
     }
     this.displayedColumns.push('const');
 
-    this.dataSource.push(simplexValues);
+    let stage: ISimplexDefaultResults = {
+      table: [],
+      auxTable: [],
+      newTable: [],
+    };
+
+    stage.table.push(simplexValues.zMax);
+    simplexValues.restrictions.forEach((x) => {
+      stage.table.push(x);
+    });
+
+    this.dataSource.push(stage);
   }
 
   getSimplexValues(): ISimplexDefaultValues {
