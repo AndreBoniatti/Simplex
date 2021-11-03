@@ -1,7 +1,7 @@
 import { ISimplexDefault } from './ISimplexDefault';
 
 export interface ISimplexDefaultResults {
-  table: ISimplexDefault[];
+  initialTable: ISimplexDefault[];
   auxTable: ISimplexDefault[];
   newTable: ISimplexDefault[];
 }

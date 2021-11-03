@@ -103,14 +103,21 @@
   <div class="results" *ngIf="dataSource.length > 0">
     <div *ngFor="let stage of dataSource; let i = index">
       <div class="row">
-        <table mat-table [dataSource]="stage.table" class="mat-elevation-z8">
+        <table
+          mat-table
+          [dataSource]="stage.initialTable"
+          class="mat-elevation-z8"
+        >
           <ng-container matColumnDef="var-basic">
             <th mat-header-cell *matHeaderCellDef>Vár. Básicas</th>
             <td mat-cell *matCellDef="let element">{{ element.label }}</td>
           </ng-container>
 
           <ng-container
-            *ngFor="let variable of stage.table[i].variables; let j = index"
+            *ngFor="
+              let variable of stage.initialTable[i].variables;
+              let j = index
+            "
             [matColumnDef]="'X' + (j + 1)"
           >
             <th mat-header-cell *matHeaderCellDef>X{{ j + 1 }}</th>

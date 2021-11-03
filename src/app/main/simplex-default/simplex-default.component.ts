@@ -5,6 +5,7 @@ import { ISimplexDefault } from './interfaces/ISimplexDefault';
 import { ISimplexDefaultResults } from './interfaces/ISimplexDefaultResults';
 import { ISimplexDefaultValues } from './interfaces/ISimplexDefaultValues';
 import { IZMaxValues } from './interfaces/IZMaxValues';
+import { SimplexDefaultService } from './simplex-default.service';
 
 @Component({
   templateUrl: './simplex-default.component.html',
@@ -25,7 +26,10 @@ export class SimplexDefaultComponent implements OnInit {
     restrictions: this._formBuilder.array([this.addRestrictionsGroup()]),
   });
 
-  constructor(private _formBuilder: FormBuilder) {}
+  constructor(
+    private _formBuilder: FormBuilder,
+    private _simplexDefaultService: SimplexDefaultService
+  ) {}
 
   ngOnInit(): void {
     this.zMax = this.zMaxForm.get('zMax') as FormArray;
@@ -99,29 +103,19 @@ export class SimplexDefaultComponent implements OnInit {
   }
 
   generateResults(): void {
+    this.resetTables();
+    let simplexValues: ISimplexDefaultValues = this.getSimplexValues();
+    this.setDisplayedColumns(simplexValues);
+
+    let stages: ISimplexDefaultResults[] =
+      this._simplexDefaultService.getStages(simplexValues);
+
+    this.dataSource = stages;
+  }
+
+  resetTables(): void {
     this.dataSource = [];
     this.displayedColumns = [];
-
-    let simplexValues: ISimplexDefaultValues = this.getSimplexValues();
-
-    this.displayedColumns.push('var-basic');
-    for (let i = 0; i < simplexValues.zMax.variables.length; i++) {
-      this.displayedColumns.push(`X${i + 1}`);
-    }
-    this.displayedColumns.push('const');
-
-    let stage: ISimplexDefaultResults = {
-      table: [],
-      auxTable: [],
-      newTable: [],
-    };
-
-    stage.table.push(simplexValues.zMax);
-    simplexValues.restrictions.forEach((x) => {
-      stage.table.push(x);
-    });
-
-    this.dataSource.push(stage);
   }
 
   getSimplexValues(): ISimplexDefaultValues {
@@ -149,7 +143,7 @@ export class SimplexDefaultComponent implements OnInit {
 
       let restriction: ISimplexDefault = {
         label: `X${simplexValues.zMax.variables.length}`,
-        variables: x.nonBasicVariables.map((x) => x.variable),
+        variables: x.nonBasicVariables.map((x) => +x.variable),
         constant: x.constant,
       };
 
@@ -165,5 +159,13 @@ export class SimplexDefaultComponent implements OnInit {
     });
 
     return simplexValues;
+  }
+
+  setDisplayedColumns(simplexValues: ISimplexDefaultValues): void {
+    this.displayedColumns.push('var-basic');
+    for (let i = 0; i < simplexValues.zMax.variables.length; i++) {
+      this.displayedColumns.push(`X${i + 1}`);
+    }
+    this.displayedColumns.push('const');
   }
 }
