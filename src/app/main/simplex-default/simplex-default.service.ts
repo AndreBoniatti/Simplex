@@ -37,20 +37,23 @@ export class SimplexDefaultService {
           newTable: [],
         };
 
-        stage.initialTable.table.push(simplexValues.zMax);
-        for (let i = 0; i < simplexValues.restrictions.length; i++) {
-          let restriction: ISimplexDefault = simplexValues.restrictions[i];
-          restriction.isPivotColumn = i == pivotLineIndex;
+        stage.initialTable.table = this.getInitialTable(
+          simplexValues,
+          pivotLineIndex
+        );
 
-          stage.initialTable.table.push(restriction);
-        }
+        stage.auxTable = this.getAuxTable(
+          simplexValues,
+          pivotLineIndex,
+          pivotColumnIndex
+        );
 
         this.stages.push(stage);
       }
     }
   }
 
-  getPivotColumnIndex(variables: number[]): number {
+  private getPivotColumnIndex(variables: number[]): number {
     let index: number = -1;
 
     for (let i = 0; i < variables.length; i++) {
@@ -63,7 +66,7 @@ export class SimplexDefaultService {
     return index;
   }
 
-  getPivotLineIndex(
+  private getPivotLineIndex(
     restrictions: ISimplexDefault[],
     columnIndex: number
   ): number {
@@ -107,5 +110,46 @@ export class SimplexDefaultService {
     }
 
     return index;
+  }
+
+  private getInitialTable(
+    simplexValues: ISimplexDefaultValues,
+    pivotLineIndex: number
+  ): ISimplexDefault[] {
+    let table: ISimplexDefault[] = [];
+
+    table.push(simplexValues.zMax);
+    for (let i = 0; i < simplexValues.restrictions.length; i++) {
+      let restriction: ISimplexDefault = simplexValues.restrictions[i];
+      restriction.isPivotColumn = i == pivotLineIndex;
+
+      table.push(restriction);
+    }
+
+    return table;
+  }
+
+  private getAuxTable(
+    simplexValues: ISimplexDefaultValues,
+    pivotLineIndex: number,
+    pivotColumnIndex: number
+  ): ISimplexDefault[] {
+    let table: ISimplexDefault[] = [];
+
+    let pivotRestriction: ISimplexDefault =
+      simplexValues.restrictions[pivotLineIndex];
+
+    let intersectionValue: number =
+      pivotRestriction.variables[pivotColumnIndex];
+
+    table.push({
+      label: `X${pivotColumnIndex + 1}`,
+      constant: pivotRestriction.constant / intersectionValue,
+      variables: pivotRestriction.variables.map((x) => {
+        return x / intersectionValue;
+      }),
+    });
+
+    return table;
   }
 }

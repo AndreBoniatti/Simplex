@@ -102,6 +102,7 @@
 
   <div class="results mb-3" *ngIf="dataSource.length > 0">
     <div *ngFor="let stage of dataSource; let i = index">
+      <span>{{ i + 1 }}° Iteração</span>
       <div class="row">
         <table
           mat-table
@@ -138,6 +139,35 @@
               *matCellDef="let element"
               [ngClass]="{ pivot: element.isPivotColumn }"
             >
+              {{ element.constant }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
+      <div class="row mt-4">
+        <table mat-table [dataSource]="stage.auxTable" class="mat-elevation-z8">
+          <ng-container matColumnDef="var-basic">
+            <th mat-header-cell *matHeaderCellDef>Vár. Básicas</th>
+            <td mat-cell *matCellDef="let element">{{ element.label }}</td>
+          </ng-container>
+
+          <ng-container
+            *ngFor="let index of indexVariables"
+            [matColumnDef]="'X' + (index + 1)"
+          >
+            <th mat-header-cell *matHeaderCellDef>X{{ index + 1 }}</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.variables[index] }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="const">
+            <th mat-header-cell *matHeaderCellDef>Const.</th>
+            <td mat-cell *matCellDef="let element">
               {{ element.constant }}
             </td>
           </ng-container>
