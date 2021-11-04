@@ -15,6 +15,7 @@ export class SimplexDefaultComponent implements OnInit {
   zMax: FormArray;
   restrictions: FormArray;
 
+  indexVariables: number[] = [];
   displayedColumns: string[] = [];
   dataSource: ISimplexDefaultResults[] = [];
 
@@ -105,7 +106,7 @@ export class SimplexDefaultComponent implements OnInit {
   generateResults(): void {
     this.resetTables();
     let simplexValues: ISimplexDefaultValues = this.getSimplexValues();
-    this.setDisplayedColumns(simplexValues);
+    this.setDisplayedColumnsAndIndexVariables(simplexValues);
 
     let stages: ISimplexDefaultResults[] =
       this._simplexDefaultService.getStages(simplexValues);
@@ -114,6 +115,7 @@ export class SimplexDefaultComponent implements OnInit {
   }
 
   resetTables(): void {
+    this.indexVariables = [];
     this.dataSource = [];
     this.displayedColumns = [];
   }
@@ -161,10 +163,13 @@ export class SimplexDefaultComponent implements OnInit {
     return simplexValues;
   }
 
-  setDisplayedColumns(simplexValues: ISimplexDefaultValues): void {
+  setDisplayedColumnsAndIndexVariables(
+    simplexValues: ISimplexDefaultValues
+  ): void {
     this.displayedColumns.push('var-basic');
     for (let i = 0; i < simplexValues.zMax.variables.length; i++) {
       this.displayedColumns.push(`X${i + 1}`);
+      this.indexVariables.push(i);
     }
     this.displayedColumns.push('const');
   }
