@@ -29,6 +29,22 @@
   font-weight: bold;
 }
 
+.table-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.btn-next-step {
+  margin-left: 5px;
+}
+
 .mat-form-field {
   width: 100%;
 }

@@ -48,7 +48,19 @@ export class SimplexDefaultService {
           pivotColumnIndex
         );
 
+        stage.newTable = this.getNewTable(
+          simplexValues,
+          stage.auxTable[0],
+          pivotLineIndex,
+          pivotColumnIndex
+        );
+
         this.stages.push(stage);
+
+        let newSimplexValues: ISimplexDefaultValues = this.getNewSimplexValues(
+          stage.newTable
+        );
+        this.setStages(newSimplexValues);
       }
     }
   }
@@ -84,7 +96,7 @@ export class SimplexDefaultService {
           index: i,
         });
 
-        if (index == -1) {
+        if (index == -1 && value >= 0) {
           index = i;
           lowestValue = value;
         }
@@ -151,5 +163,73 @@ export class SimplexDefaultService {
     });
 
     return table;
+  }
+
+  private getNewTable(
+    simplexValues: ISimplexDefaultValues,
+    auxLine: ISimplexDefault,
+    pivotLineIndex: number,
+    pivotColumnIndex: number
+  ): ISimplexDefault[] {
+    let table: ISimplexDefault[] = [];
+
+    table.push(
+      this.calculateNewLineFromNewTable(
+        simplexValues.zMax,
+        auxLine,
+        pivotColumnIndex
+      )
+    );
+
+    for (let i = 0; i < simplexValues.restrictions.length; i++) {
+      if (i != pivotLineIndex) {
+        table.push(
+          this.calculateNewLineFromNewTable(
+            simplexValues.restrictions[i],
+            auxLine,
+            pivotColumnIndex
+          )
+        );
+      }
+    }
+
+    table.push(auxLine);
+
+    return table;
+  }
+
+  private calculateNewLineFromNewTable(
+    line: ISimplexDefault,
+    auxLine: ISimplexDefault,
+    pivotColumnIndex: number
+  ): ISimplexDefault {
+    let fixedValue: number = line.variables[pivotColumnIndex];
+
+    let newLine: ISimplexDefault = {
+      label: line.label,
+      constant: line.constant - fixedValue * auxLine.constant,
+      variables: [],
+    };
+
+    for (let i = 0; i < line.variables.length; i++) {
+      newLine.variables.push(
+        line.variables[i] - fixedValue * auxLine.variables[i]
+      );
+    }
+
+    return newLine;
+  }
+
+  private getNewSimplexValues(table: ISimplexDefault[]): ISimplexDefaultValues {
+    let newValues: ISimplexDefaultValues = {
+      zMax: table[0],
+      restrictions: [],
+    };
+
+    for (let i = 1; i < table.length; i++) {
+      newValues.restrictions.push(table[i]);
+    }
+
+    return newValues;
   }
 }

@@ -10,6 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatStepperModule } from '@angular/material/stepper';
 
 import { SimplexDefaultComponent } from './simplex-default.component';
 import { SimplexDefaultRoutingModule } from './simplex-default-routing.module';
@@ -32,6 +33,7 @@ import { SharedModule } from './../../shared/shared.module';
     MatPaginatorModule,
     MatSortModule,
     MatMenuModule,
+    MatStepperModule,
   ],
   providers: [],
 })
